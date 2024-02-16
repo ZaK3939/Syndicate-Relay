@@ -13,3 +13,5 @@ export const CARD_DIMENSIONS = {
 };
 
 export const TOKEN_IMAGE = `${NEXT_PUBLIC_URL}/park-1.png`;
+
+export const PHI_GRAPH = `https://graph-api.phi.blue/graphql`;

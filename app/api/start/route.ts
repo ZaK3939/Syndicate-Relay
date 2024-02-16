@@ -1,13 +1,14 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { NEXT_PUBLIC_URL, ZORA_COLLECTION_ADDRESS, ZORA_TOKEN_ID } from '../../config';
+import { NEXT_PUBLIC_URL, PHI_GRAPH, ZORA_COLLECTION_ADDRESS, ZORA_TOKEN_ID } from '../../config';
 import { getAddressButtons } from '../../lib/addresses';
 import { allowedOrigin } from '../../lib/origin';
 import { kv } from '@vercel/kv';
 import { getFrameHtml } from '../../lib/getFrameHtml';
-import { Session } from '../../lib/types';
+import { LandResponse, Session } from '../../lib/types';
 import { mintResponse } from '../../lib/responses';
+import { retryableApiPost } from '../../lib/retry';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
@@ -17,9 +18,20 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log('isValid', isValid, 'message', message);
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
     const isActive = message.raw.action.interactor.active_status === 'active';
+    const query = `{
+      "query": "query philandList { 
+      philandList
+        (input: 
+          {address: \"0x5037e7747fAa78fc0ECF8DFC526DcD19f73076ce\", transparent: false}) 
+            { data { name landurl imageurl } 
+          } 
+        "
+    }`;
+    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, query);
 
-    if (isActive) {
+    if (isActive || (result.data && result.data.philandList.data)) {
       const fid = message.interactor.fid;
+      const landName = result.data!.philandList.data[0].name;
       const { transactionId, transactionHash } = ((await kv.get(`session:${fid}`)) ??
         {}) as Session;
       if (transactionHash) {
@@ -28,7 +40,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           getFrameHtml({
             buttons: [
               {
-                label: 'Transaction',
+                label: `Transaction ${landName}`,
                 action: 'link',
                 target: `https://basescan.org/tx/${transactionHash}`,
               },
