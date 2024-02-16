@@ -71,7 +71,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function Page() {
   return (
     <>
-      <h1>zizzamia.xyz</h1>
+      <h1>zak3939.phi</h1>
     </>
   );
 }

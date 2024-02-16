@@ -1,5 +1,6 @@
 export const NEXT_PUBLIC_URL = 'https://mint.farcaster.xyz';
-export const ALLOWED_ORIGIN = 'mint.farcaster.xyz';
+// export const ALLOWED_ORIGIN = 'mint.farcaster.xyz';
+export const ALLOWED_ORIGIN = 'test-frame-zak3939.vercel.app';
 
 export const ZORA_COLLECTION_ADDRESS = '0xf5a3b6dee033ae5025e4332695931cadeb7f4d2b';
 export const ZORA_TOKEN_ID = '1';

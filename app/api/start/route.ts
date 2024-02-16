@@ -1,12 +1,12 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../config';
-// import { NEXT_PUBLIC_URL, ZORA_COLLECTION_ADDRESS, ZORA_TOKEN_ID } from '../../config';
+
+import { NEXT_PUBLIC_URL, ZORA_COLLECTION_ADDRESS, ZORA_TOKEN_ID } from '../../config';
 import { getAddressButtons } from '../../lib/addresses';
 import { allowedOrigin } from '../../lib/origin';
-// import { kv } from '@vercel/kv';
+import { kv } from '@vercel/kv';
 import { getFrameHtml } from '../../lib/getFrameHtml';
-// import { Session } from '../../lib/types';
+import { Session } from '../../lib/types';
 import { mintResponse } from '../../lib/responses';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
@@ -20,50 +20,50 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     if (isActive) {
       const fid = message.interactor.fid;
-      // const { transactionId, transactionHash } = ((await kv.get(`session:${fid}`)) ??
-      //   {}) as Session;
-      // if (transactionHash) {
-      //   // Already minted
-      //   return new NextResponse(
-      //     getFrameHtml({
-      //       buttons: [
-      //         {
-      //           label: 'Transaction',
-      //           action: 'link',
-      //           target: `https://basescan.org/tx/${transactionHash}`,
-      //         },
-      //         {
-      //           label: 'Mint',
-      //           action: 'mint',
-      //           target: `eip155:8453:${ZORA_COLLECTION_ADDRESS}:${ZORA_TOKEN_ID}`,
-      //         },
-      //       ],
-      //       image: `${NEXT_PUBLIC_URL}/api/images/claimed`,
-      //     }),
-      //   );
-      // } else if (transactionId) {
-      //   // Mint in queue
-      //   return new NextResponse(
-      //     getFrameHtml({
-      //       buttons: [
-      //         {
-      //           label: '🔄 Check status',
-      //         },
-      //       ],
-      //       post_url: `${NEXT_PUBLIC_URL}/api/check`,
-      //       image: `${NEXT_PUBLIC_URL}/api/images/check`,
-      //     }),
-      //   );
-      // } else {
-      const buttons = getAddressButtons(message.interactor);
-      return new NextResponse(
-        getFrameHtml({
-          buttons,
-          image: `${NEXT_PUBLIC_URL}/api/images/select`,
-          post_url: `${NEXT_PUBLIC_URL}/api/confirm`,
-        }),
-      );
-      // }
+      const { transactionId, transactionHash } = ((await kv.get(`session:${fid}`)) ??
+        {}) as Session;
+      if (transactionHash) {
+        // Already minted
+        return new NextResponse(
+          getFrameHtml({
+            buttons: [
+              {
+                label: 'Transaction',
+                action: 'link',
+                target: `https://basescan.org/tx/${transactionHash}`,
+              },
+              {
+                label: 'Mint',
+                action: 'mint',
+                target: `eip155:8453:${ZORA_COLLECTION_ADDRESS}:${ZORA_TOKEN_ID}`,
+              },
+            ],
+            image: `${NEXT_PUBLIC_URL}/api/images/claimed`,
+          }),
+        );
+      } else if (transactionId) {
+        // Mint in queue
+        return new NextResponse(
+          getFrameHtml({
+            buttons: [
+              {
+                label: '🔄 Check status',
+              },
+            ],
+            post_url: `${NEXT_PUBLIC_URL}/api/check`,
+            image: `${NEXT_PUBLIC_URL}/api/images/check`,
+          }),
+        );
+      } else {
+        const buttons = getAddressButtons(message.interactor);
+        return new NextResponse(
+          getFrameHtml({
+            buttons,
+            image: `${NEXT_PUBLIC_URL}/api/images/select`,
+            post_url: `${NEXT_PUBLIC_URL}/api/confirm`,
+          }),
+        );
+      }
     } else {
       return mintResponse();
     }
