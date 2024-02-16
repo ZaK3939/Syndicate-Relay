@@ -1,4 +1,6 @@
-export const NEXT_PUBLIC_URL = 'https://mint.farcaster.xyz';
+// export const NEXT_PUBLIC_URL = 'https://mint.farcaster.xyz';
+export const NEXT_PUBLIC_URL = 'https://test-frame-zak3939.vercel.app';
+
 // export const ALLOWED_ORIGIN = 'mint.farcaster.xyz';
 export const ALLOWED_ORIGIN = 'test-frame-zak3939.vercel.app';
 
