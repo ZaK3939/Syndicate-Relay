@@ -22,7 +22,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       "query": "query philandList { 
       philandList
         (input: 
-          {address: \"0x5037e7747fAa78fc0ECF8DFC526DcD19f73076ce\", transparent: false}) 
+          {address: "0x5037e7747fAa78fc0ECF8DFC526DcD19f73076ce", transparent: false}) 
             { data { name landurl imageurl } 
           } 
         "
