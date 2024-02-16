@@ -27,9 +27,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     //       }
     // }`;
     console.log('message', message);
-    const address = '0x5037e7747fAa78fc0ECF8DFC526DcD19f73076ce';
+    const address = message.interactor.verified_accounts[0].toLowerCase();
     const query = `query philandList { philandList(input: {address: "${address}" transparent: false}) { data { name landurl imageurl } } }`;
-    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, query);
+    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, { query: query });
     console.log('result', result);
     if (isActive || (result.data && result.data.philandList.data)) {
       const fid = message.interactor.fid;
