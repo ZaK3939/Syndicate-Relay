@@ -26,7 +26,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     //         { data { name landurl imageurl }
     //       }
     // }`;
-    const address = message.interactor.custody_address.toLowerCase();
+    const address = message.interactor.verified_accounts[0].toLowerCase();
     const query = `query philandList { philandList(input: {address: "${address}" transparent: false}) { data { name landurl imageurl } } }`;
     const result = await retryableApiPost<LandResponse>(PHI_GRAPH, query);
 
