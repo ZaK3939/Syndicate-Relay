@@ -14,7 +14,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   const { isValid, message } = await getFrameMessage(body, {
     neynarApiKey: process.env.NEYNAR_API_KEY,
   });
-
+  console.log('isValid', isValid, 'message', message);
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
     const isActive = message.raw.action.interactor.active_status === 'active';
 
