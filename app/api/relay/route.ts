@@ -1,13 +1,14 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { kv } from '@vercel/kv';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../config';
+import { NEXT_PUBLIC_URL, PHI_GRAPH } from '../../config';
 import { getAddressButtons } from '../../lib/addresses';
 import signMintData from '../../lib/signMint';
 import { allowedOrigin } from '../../lib/origin';
 import { getFrameHtml } from '../../lib/getFrameHtml';
 import { errorResponse, mintResponse } from '../../lib/responses';
-import { Session } from '../../lib/types';
+import { LandResponse, Session } from '../../lib/types';
+import { retryableApiPost } from '../../lib/retry';
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
@@ -30,8 +31,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const isActive = message.raw.action.interactor.active_status === 'active';
     const fid = message.interactor.fid;
     let session = ((await kv.get(`session:${fid}`)) ?? {}) as Session;
-
-    if (isActive && session?.address) {
+    const address = message.interactor.verified_accounts[0].toLowerCase();
+    const query = `query philandList { philandList(input: {address: "${address}" transparent: false}) { data { name landurl imageurl } } }`;
+    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, { query: query });
+    console.log('result', result);
+    if ((isActive || (result.data && result.data.philandList.data)) && session?.address) {
       const { address } = session;
       const sig = await signMintData({
         to: address,
