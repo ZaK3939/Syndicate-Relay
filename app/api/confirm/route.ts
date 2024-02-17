@@ -1,11 +1,13 @@
 import { FrameRequest, getFrameMessage, FrameValidationData } from '@coinbase/onchainkit';
 import { kv } from '@vercel/kv';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../config';
+import { NEXT_PUBLIC_URL, PHI_GRAPH } from '../../config';
 import { getAddresses } from '../../lib/addresses';
 import { allowedOrigin } from '../../lib/origin';
 import { getFrameHtml } from '../../lib/getFrameHtml';
 import { mintResponse } from '../../lib/responses';
+import { retryableApiPost } from '../../lib/retry';
+import { LandResponse } from '../../lib/types';
 
 function validButton(message?: FrameValidationData) {
   return message?.button && message?.button > 0 && message?.button < 5;
@@ -21,7 +23,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid = message.interactor.fid;
     const isActive = message.raw.action.interactor.active_status === 'active';
 
-    if (isActive) {
+    const address = message.interactor.verified_accounts[0].toLowerCase();
+    const query = `query philandList { philandList(input: {address: "${address}" transparent: false}) { data { name landurl imageurl } } }`;
+    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, { query: query });
+    console.log('result', result);
+    if (isActive || (result.data && result.data.philandList.data)) {
       const addresses = getAddresses(message.interactor);
       const address = addresses[message.button - 1];
 
