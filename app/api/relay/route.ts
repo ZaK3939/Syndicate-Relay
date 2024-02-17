@@ -44,19 +44,20 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         fid,
       });
       console.log('sig', sig);
-      const res = await fetch('https://frame.syndicate.io/api/v2/sendTransactio', {
+      const postBody = JSON.stringify({
+        frameTrustedData: body.trustedData.messageBytes,
+        contractAddress: process.env.MINER_CONTRACT_ADDRESS,
+        functionSignature: 'mint(address to, uint256 tokenId, uint256 fid, bytes calldata sig)',
+        // args: [address, 1, fid, sig],
+        args: { to: '{frame-user}', amount: 1, fid: fid, sig: sig },
+      });
+      const res = await fetch('https://frame.syndicate.io/api/v2/sendTransaction', {
         method: 'POST',
         headers: {
-          'content-type': 'application/json',
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
         },
-        body: JSON.stringify({
-          frameTrustedData: body.trustedData.messageBytes,
-          contractAddress: process.env.MINER_CONTRACT_ADDRESS,
-          functionSignature: 'mint(address to, uint256 tokenId, uint256 fid, bytes calldata sig)',
-          // args: [address, 1, fid, sig],
-          args: { to: '{frame-user}', amount: 1, fid: fid, sig: sig },
-        }),
+        body: postBody,
       });
       console.log('res', res);
       if (res.status === 200) {
