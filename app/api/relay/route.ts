@@ -55,6 +55,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           args: [address, 1, fid, sig],
         }),
       });
+      console.log('res', res);
       if (res.status === 200) {
         const {
           success,
@@ -73,6 +74,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             },
           );
           if (res.status === 200) {
+            console.log(
+              'res',
+              res,
+              `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
+              'go to check',
+            );
             return new NextResponse(
               getFrameHtml({
                 buttons: [
