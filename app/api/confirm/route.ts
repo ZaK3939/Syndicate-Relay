@@ -1,7 +1,7 @@
 import { FrameRequest, getFrameMessage, FrameValidationData } from '@coinbase/onchainkit';
 import { kv } from '@vercel/kv';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL, PHI_GRAPH } from '../../config';
+import { NEXT_PUBLIC_URL, PHI_GRAPH, queryForLand } from '../../config';
 import { getAddresses } from '../../lib/addresses';
 import { allowedOrigin } from '../../lib/origin';
 import { getFrameHtml } from '../../lib/getFrameHtml';
@@ -24,8 +24,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const isActive = message.raw.action.interactor.active_status === 'active';
 
     const address = message.interactor.verified_accounts[0].toLowerCase();
-    const query = `query philandList { philandList(input: {address: "${address}" transparent: false}) { data { name landurl imageurl } } }`;
-    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, { query: query });
+    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
+      query: queryForLand(address),
+    });
     console.log('result', result);
     if (isActive || (result.data && result.data.philandList.data)) {
       const addresses = getAddresses(message.interactor);

@@ -15,3 +15,7 @@ export const CARD_DIMENSIONS = {
 export const TOKEN_IMAGE = `${NEXT_PUBLIC_URL}/park-1.png`;
 
 export const PHI_GRAPH = `https://graph-api.phi.blue/graphql`;
+
+export function queryForLand(address: string) {
+  return `query philandList { philandList(input: {address: "${address}" transparent: false}) { data { name landurl imageurl } } }`;
+}

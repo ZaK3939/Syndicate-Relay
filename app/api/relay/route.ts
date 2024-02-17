@@ -1,7 +1,7 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { kv } from '@vercel/kv';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL, PHI_GRAPH } from '../../config';
+import { NEXT_PUBLIC_URL, PHI_GRAPH, queryForLand } from '../../config';
 import { getAddressButtons } from '../../lib/addresses';
 import signMintData from '../../lib/signMint';
 import { allowedOrigin } from '../../lib/origin';
@@ -32,9 +32,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const fid = message.interactor.fid;
     let session = ((await kv.get(`session:${fid}`)) ?? {}) as Session;
     const address = message.interactor.verified_accounts[0].toLowerCase();
-    const query = `query philandList { philandList(input: {address: "${address}" transparent: false}) { data { name landurl imageurl } } }`;
-    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, { query: query });
-    console.log('result', result);
+    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
+      query: queryForLand(address),
+    });
+
     if ((isActive || (result.data && result.data.philandList.data)) && session?.address) {
       const { address } = session;
       const sig = await signMintData({
@@ -42,6 +43,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         tokenId: 1,
         fid,
       });
+      console.log('sig', sig);
       const res = await fetch('https://frame.syndicate.io/api/mint', {
         method: 'POST',
         headers: {

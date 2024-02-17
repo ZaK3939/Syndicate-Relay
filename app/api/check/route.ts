@@ -1,6 +1,6 @@
 import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
 import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL, PHI_GRAPH } from '../../config';
+import { NEXT_PUBLIC_URL, PHI_GRAPH, queryForLand } from '../../config';
 import { allowedOrigin } from '../../lib/origin';
 import { kv } from '@vercel/kv';
 import { getFrameHtml } from '../../lib/getFrameHtml';
@@ -18,9 +18,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
     const isActive = message.raw.action.interactor.active_status === 'active';
     const address = message.interactor.verified_accounts[0].toLowerCase();
-    const query = `query philandList { philandList(input: {address: "${address}" transparent: false}) { data { name landurl imageurl } } }`;
-    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, { query: query });
-    console.log('result', result);
+    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
+      query: queryForLand(address),
+    });
     if (isActive || (result.data && result.data.philandList.data)) {
       const fid = message.interactor.fid;
       let session = ((await kv.get(`session:${fid}`)) ?? {}) as Session;
@@ -30,6 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
       // If we've retried 3 times, give up
       if (totalRetries > 2) {
+        console.error('retries exceeded');
         return errorResponse();
       }
 
@@ -131,6 +132,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           }
         }
       }
+      // If we don't have a transactionId, mint
+      console.error;
       return errorResponse();
     } else {
       return mintResponse();
