@@ -1,13 +1,39 @@
 [profile.default]
-src = "src"
-out = "out"
-libs = ["lib"]
-evm_version = "paris"
-optimizer_runs = 100_000
+  auto_detect_solc = false
+  block_timestamp = 1_680_220_800 # March 31, 2023 at 00:00 GMT
+  bytecode_hash = "none"
+  evm_version = "paris"           # See https://www.evmdiff.com/features?name=PUSH0&kind=opcode
+  fuzz = { runs = 1_000 }
+  gas_reports = ["*"]
+  optimizer = true
+  optimizer_runs = 10_000
+  out = "out"
+  script = "script"
+  solc = "0.8.23"
+  src = "src"
+  test = "test"
+  build_info = true
+  extra_output = ["storageLayout"]
 
-[rpc_endpoints]
-base = "${BASE_MAINNET_RPC}"
+[profile.ci]
+  fuzz = { runs = 10_000 }
+  verbosity = 4
+   
+[etherscan]
+  base = { key = "${API_KEY_BASE}" }
 
 [fmt]
-line_length = 80
-multiline_func_header = 'params_first'
+  bracket_spacing = true
+  int_types = "long"
+  line_length = 120
+  multiline_func_header = "all"
+  number_underscore = "thousands"
+  quote_style = "double"
+  tab_width = 4
+  wrap_comments = true
+  
+[rpc_endpoints]
+  base = "${BASE_MAINNET_RPC}"
+
+
+

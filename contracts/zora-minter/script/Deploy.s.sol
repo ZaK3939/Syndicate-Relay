@@ -1,19 +1,26 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.23;
 
-import {ZoraMinter} from "../src/ZoraMinter.sol";
-import {Script, console} from "forge-std/Script.sol";
+import { console2 } from "forge-std/console2.sol";
 
-contract Deploy is Script {
-    address internal referrer = address(0x86924c37A93734E8611Eb081238928a9d18a63c0);
-    address internal signer = address(0x44DD9B89d4087246A0Fc54dba0c69000a4F59162);
-    address internal collection = address(0xF5a3b6DEE033AE5025E4332695931CaDeB7f4D2B);
-    address internal minter = address(0xFF8B0f870ff56870Dc5aBd6cB3E6E89c8ba2e062);
+import { ZoraMinter } from "../src/ZoraMinter.sol";
+import { BaseScript } from "./Base.s.sol";
 
-    function run() public {
-        address owner = msg.sender;
+contract Deploy is BaseScript {
+    address deployer;
+    address internal referrer = address(0x6D83cac25CfaCdC7035Bed947B92b64e6a8B8090);
+    address internal signer = address(0xD892F010cc6B13dF6BBF1f5699bd7cDF1ec23595);
+    address internal collection = address(0xd12175C64D479e9e3d09B9B29889A36C0942bD4d);
+    // address internal minter = address(0xFF8B0f870ff56870Dc5aBd6cB3E6E89c8ba2e062);
+    address internal minter = address(0x5037e7747fAa78fc0ECF8DFC526DcD19f73076ce);
 
-        vm.broadcast();
-        new ZoraMinter{ salt: unicode"🐎" }(owner, referrer, signer, collection, minter);
+     function setUp() public virtual {
+        string memory mnemonic = vm.envString("MNEMONIC");
+        (deployer,) = deriveRememberKey(mnemonic, 0);
+        console2.log("Deployer: %s", deployer);
+    }
+
+    function run() public broadcast {
+        new ZoraMinter{ salt: unicode"🏝️" }(deployer, referrer, signer, collection, minter);
     }
 }
