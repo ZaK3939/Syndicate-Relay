@@ -60,7 +60,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         },
         body: JSON.stringify({
           frameTrustedData: body.trustedData.messageBytes,
-          contractAddress: process.env.MINER_CONTRACT_ADDRESS,
+          contractAddress: '0xa4d2e7e997A837e6CB6Cf0C1607D93955C31AF7a',
+          // contractAddress: process.env.MINER_CONTRACT_ADDRESS,
           functionSignature: 'mint(address to)',
           args: { to: '{frame-user}' },
         }),
