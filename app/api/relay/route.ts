@@ -58,7 +58,12 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
         },
-        body: postBody,
+        body: JSON.stringify({
+          frameTrustedData: body.trustedData.messageBytes,
+          contractAddress: process.env.MINER_CONTRACT_ADDRESS,
+          functionSignature: 'mint(address to, uint256 tokenId, uint256 fid, bytes calldata sig)',
+          args: { to: '{frame-user}', amount: 1, fid: fid, sig: sig },
+        }),
       });
       console.log('response frame', res);
       if (res.status === 200) {
