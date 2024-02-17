@@ -44,7 +44,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         fid,
       });
       console.log('sig', sig);
-      const res = await fetch('https://frame.syndicate.io/api/mint', {
+      const res = await fetch('https://frame.syndicate.io/api/v2/sendTransactio', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -52,6 +52,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         },
         body: JSON.stringify({
           frameTrustedData: body.trustedData.messageBytes,
+          contractAddress: process.env.MINER_CONTRACT_ADDRESS,
+          functionSignature: 'mint(address,uint256,uint256,bytes)',
           args: [address, 1, fid, sig],
         }),
       });

@@ -34,15 +34,15 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         return errorResponse();
       }
 
-      // If we've checked 3 times, try to mint again
-      if (totalChecks > 2 && session.address) {
+      // If we've not checked 3 times, try to mint again
+      if (totalChecks < 3 && session.address) {
         const { address } = session;
         const sig = await signMintData({
           to: address,
           tokenId: 1,
           fid,
         });
-        const res = await fetch('https://frame.syndicate.io/api/mint', {
+        const res = await fetch('https://frame.syndicate.io/api/v2/sendTransactio', {
           method: 'POST',
           headers: {
             'content-type': 'application/json',
@@ -50,6 +50,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           },
           body: JSON.stringify({
             frameTrustedData: body.trustedData.messageBytes,
+            contractAddress: process.env.MINER_CONTRACT_ADDRESS,
+            functionSignature: 'mint(address,uint256,uint256,bytes)',
             args: [address, 1, fid, sig],
           }),
         });
