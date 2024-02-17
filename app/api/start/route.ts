@@ -29,7 +29,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
       query: queryForLand(address),
     });
-    console.log('result', result);
     if (isActive || (result.data && result.data.philandList.data)) {
       const fid = message.interactor.fid;
       const landName = result.data!.philandList.data[0].name;

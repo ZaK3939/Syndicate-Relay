@@ -69,6 +69,16 @@ contract ZoraMinter is Ownable, EIP712 {
         emit SetMinter(address(0), minter = _minter);
     }
 
+    function mint(
+        address to
+    ) external {
+        emit Mint(to, 1, 1);
+        uint256 fee = mintFee();
+        IZoraCreator1155(collection).mintWithRewards{value: fee}(
+            minter, 1, 1, abi.encode(to), referrer
+        );
+    }
+
     /// @notice Mint a token.
     ///         Caller must provide an EIP-712 `Mint` signature from the Frame server.
     function mint(
