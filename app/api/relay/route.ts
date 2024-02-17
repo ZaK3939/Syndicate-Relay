@@ -66,7 +66,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           args: { to: '{frame-user}' },
         }),
       });
-      console.log('response frame', res);
+      console.log('response syndicate frame', res);
+
       if (res.status === 200) {
         const {
           success,
