@@ -42,7 +42,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           tokenId: 1,
           fid,
         });
-        const res = await fetch('https://frame.syndicate.io/api/v2/sendTransactio', {
+        const res = await fetch('https://frame.syndicate.io/api/v2/sendTransaction', {
           method: 'POST',
           headers: {
             'content-type': 'application/json',
