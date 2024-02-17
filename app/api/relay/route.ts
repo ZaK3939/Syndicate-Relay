@@ -45,17 +45,17 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       });
       console.log('sig', sig);
       // args: [address, 1, fid, sig],
-      const postBody = JSON.stringify({
-        frameTrustedData: body.trustedData.messageBytes,
-        contractAddress: process.env.MINER_CONTRACT_ADDRESS,
-        functionSignature: 'mint(address to, uint256 tokenId, uint256 fid, bytes calldata sig)',
-        args: { to: '{frame-user}', amount: 1, fid: fid, sig: sig },
-      });
-      console.log('postBody', postBody);
+      // const postBody = JSON.stringify({
+      //   frameTrustedData: body.trustedData.messageBytes,
+      //   contractAddress: process.env.MINER_CONTRACT_ADDRESS,
+      //   functionSignature: 'mint(address to, uint256 tokenId, uint256 fid, bytes calldata sig)',
+      //   args: { to: '{frame-user}', amount: 1, fid: fid, sig: sig },
+      // });
+      // console.log('postBody', postBody);
       const res = await fetch('https://frame.syndicate.io/api/v2/sendTransaction', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'content-type': 'application/json',
           Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
         },
         body: JSON.stringify({
