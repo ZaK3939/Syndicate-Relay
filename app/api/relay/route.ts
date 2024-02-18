@@ -49,7 +49,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       const postBody = JSON.stringify({
         frameTrustedData: body.trustedData.messageBytes,
         // contractAddress: process.env.MINER_CONTRACT_ADDRESS,
-        contractAddress: '0xa4d2e7e997A837e6CB6Cf0C1607D93955C31AF7a',
+        contractAddress: '0x3221679c531bcf7eb4f728bbad3f4301d2e2d640',
         functionSignature: functionSignature,
         args: { to: '{frame-user}' },
         // functionSignature: 'mint(address to, uint256 tokenId, uint256 fid, bytes calldata sig)',

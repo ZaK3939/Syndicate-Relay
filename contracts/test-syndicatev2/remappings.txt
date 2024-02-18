@@ -1,0 +1,5 @@
+@prb/test/=lib/prb-test/src/
+forge-std/=lib/forge-std/src/
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+isolmate/=lib/isolmate/src
+permit2/=lib/permit2
