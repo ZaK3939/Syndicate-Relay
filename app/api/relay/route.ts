@@ -51,7 +51,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         // contractAddress: process.env.MINER_CONTRACT_ADDRESS,
         contractAddress: '0x3221679c531bcf7eb4f728bbad3f4301d2e2d640',
         functionSignature: functionSignature,
-        args: { to: '{frame-user}' },
+        args: { to: address },
         // functionSignature: 'mint(address to, uint256 tokenId, uint256 fid, bytes calldata sig)',
         // args: { to: '{frame-user}', amount: 1, fid: fid, sig: sig },
       });
