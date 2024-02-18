@@ -4,7 +4,7 @@ export const NEXT_PUBLIC_URL = 'https://test-frame-zak3939.vercel.app';
 // export const ALLOWED_ORIGIN = 'mint.farcaster.xyz';
 export const ALLOWED_ORIGIN = 'test-frame-zak3939.vercel.app';
 export const MINTER_CONTRACT = '0xcf2db0c4abeafc2e1af552979f380c965f63783e';
-export const ZORA_COLLECTION_ADDRESS = '0xf5a3b6dee033ae5025e4332695931cadeb7f4d2b';
+export const ZORA_COLLECTION_ADDRESS = '0xd12175c64d479e9e3d09b9b29889a36c0942bd4d';
 export const ZORA_TOKEN_ID = '1';
 
 export const CARD_DIMENSIONS = {
