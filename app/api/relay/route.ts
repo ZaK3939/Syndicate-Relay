@@ -44,6 +44,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         fid,
       });
       // args: [address, 1, fid, sig],
+      console.log('body.trustedData', body.trustedData);
       const postBody = JSON.stringify({
         frameTrustedData: body.trustedData.messageBytes,
         contractAddress: process.env.MINER_CONTRACT_ADDRESS,
