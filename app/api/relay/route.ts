@@ -59,56 +59,68 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         // args: { to: '{frame-user}', amount: 1, fid: fid, sig: sig },
       });
       console.log("postBody", postBody);
-      const res = await fetch(
-        "https://frame.syndicate.io/api/v2/sendTransaction",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
-          },
-          body: postBody,
-        },
-      );
-      console.log("response syndicate frame", res);
-
-      if (res.status === 200) {
-        const {
-          success,
-          data: { transactionId },
-        } = await res.json();
-        if (success) {
-          session = { ...session, transactionId };
-          await kv.set(`session:${fid}`, session);
-          const res = await fetch(
-            `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
-            {
-              headers: {
-                "content-type": "application/json",
-                Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
-              },
+      try {
+        const res = await fetch(
+          "https://frame.syndicate.io/api/v2/sendTransaction",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
             },
+            body: postBody,
+          },
+        );
+        if (!res.ok) {
+          // Try to read the response body and include it in the error message
+          const errorBody = await res.text();
+          throw new Error(
+            `Syndicate Frame API HTTP error! Status: ${res.status}, Body: ${errorBody}`,
           );
-          if (res.status === 200) {
-            console.log(
-              "res",
-              res,
+        }
+        console.log("response syndicate frame", res);
+
+        if (res.status === 200) {
+          const {
+            success,
+            data: { transactionId },
+          } = await res.json();
+          if (success) {
+            session = { ...session, transactionId };
+            await kv.set(`session:${fid}`, session);
+            const res = await fetch(
               `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
-              "go to check",
+              {
+                headers: {
+                  "content-type": "application/json",
+                  Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
+                },
+              },
             );
-            return new NextResponse(
-              getFrameHtml({
-                buttons: [
-                  {
-                    label: "🔄 Check status",
-                  },
-                ],
-                post_url: `${NEXT_PUBLIC_URL}/api/check`,
-                image: `${NEXT_PUBLIC_URL}/api/images/check`,
-              }),
-            );
+            if (res.status === 200) {
+              console.log(
+                "res",
+                res,
+                `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
+                "go to check",
+              );
+              return new NextResponse(
+                getFrameHtml({
+                  buttons: [
+                    {
+                      label: "🔄 Check status",
+                    },
+                  ],
+                  post_url: `${NEXT_PUBLIC_URL}/api/check`,
+                  image: `${NEXT_PUBLIC_URL}/api/images/check`,
+                }),
+              );
+            }
           }
         }
+      } catch (e) {
+        console.error(e);
+        return errorResponse();
       }
       return errorResponse();
     } else {
