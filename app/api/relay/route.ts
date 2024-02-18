@@ -55,7 +55,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       const res = await fetch('https://frame.syndicate.io/api/v2/sendTransaction', {
         method: 'POST',
         headers: {
-          'content-type': 'application/json',
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
         },
         body: postBody,
