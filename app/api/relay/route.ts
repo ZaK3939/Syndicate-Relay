@@ -43,7 +43,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         tokenId: 1,
         fid,
       });
-      console.log('sig', sig);
       // args: [address, 1, fid, sig],
       // const postBody = JSON.stringify({
       //   frameTrustedData: body.trustedData.messageBytes,
@@ -63,7 +62,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           contractAddress: '0xa4d2e7e997A837e6CB6Cf0C1607D93955C31AF7a',
           // contractAddress: process.env.MINER_CONTRACT_ADDRESS,
           functionSignature: 'mint(address to)',
-          args: { to: '{frame-user}' },
+          args: { to: address },
         }),
       });
       console.log('response syndicate frame', res);
