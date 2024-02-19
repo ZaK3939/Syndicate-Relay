@@ -62,7 +62,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               frameTrustedData: body.trustedData.messageBytes,
               contractAddress: "0x3221679c531bcf7eb4f728bbad3f4301d2e2d640",
               functionSignature: functionSignature,
-              args: { to: address },
+              args: { to: "{frame-user}" },
             }),
           },
         );
