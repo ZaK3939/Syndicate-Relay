@@ -81,6 +81,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             success,
             data: { transactionId },
           } = await res.json();
+          console.log("transactionId", success, transactionId);
           if (success) {
             session = {
               ...session,
