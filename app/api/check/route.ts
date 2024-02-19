@@ -120,7 +120,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       if (transactionId) {
         await kv.set(`session:${fid}`, { ...session, checks: totalChecks + 1 });
         const res = await fetch(
-          `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
+          `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
           {
             headers: {
               "content-type": "application/json",
@@ -128,6 +128,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             },
           },
         );
+        console.log(res);
         if (res.status === 200) {
           const {
             data: { transactionHash },
