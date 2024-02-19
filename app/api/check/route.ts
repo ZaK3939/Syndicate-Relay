@@ -1,13 +1,13 @@
-import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
-import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL, PHI_GRAPH, queryForLand } from '../../config';
-import { allowedOrigin } from '../../lib/origin';
-import { kv } from '@vercel/kv';
-import { getFrameHtml } from '../../lib/getFrameHtml';
-import { LandResponse, Session } from '../../lib/types';
-import { errorResponse, mintResponse } from '../../lib/responses';
-import signMintData from '../../lib/signMint';
-import { retryableApiPost } from '../../lib/retry';
+import { FrameRequest, getFrameMessage } from "@coinbase/onchainkit";
+import { NextRequest, NextResponse } from "next/server";
+import { NEXT_PUBLIC_URL, PHI_GRAPH, queryForLand } from "../../config";
+import { allowedOrigin } from "../../lib/origin";
+import { kv } from "@vercel/kv";
+import { getFrameHtml } from "../../lib/getFrameHtml";
+import { LandResponse, Session } from "../../lib/types";
+import { errorResponse, mintResponse } from "../../lib/responses";
+import signMintData from "../../lib/signMint";
+import { retryableApiPost } from "../../lib/retry";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
@@ -16,7 +16,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   });
 
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
-    const isActive = message.raw.action.interactor.active_status === 'active';
+    const isActive = message.raw.action.interactor.active_status === "active";
     const address = message.interactor.verified_accounts[0].toLowerCase();
     const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
       query: queryForLand(address),
@@ -29,45 +29,53 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       const totalRetries = retries ?? 0;
 
       // If we've retried 3 times, give up
-      if (totalRetries > 2) {
-        console.error('retries exceeded');
-        return errorResponse();
-      }
+      // if (totalRetries > 2) {
+      //   console.error("retries exceeded");
+      //   return errorResponse();
+      // }
 
       // If we've not checked 3 times, try to mint again
-      if (totalChecks < 3 && session.address) {
+      if (totalChecks > 3 && session.address) {
         const { address } = session;
         const sig = await signMintData({
           to: address,
           tokenId: 1,
           fid,
         });
-        const res = await fetch('https://frame.syndicate.io/api/v2/sendTransaction', {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
-          },
-          body: JSON.stringify({
-            frameTrustedData: body.trustedData.messageBytes,
-            contractAddress: process.env.MINER_CONTRACT_ADDRESS,
-            functionSignature: 'mint(address,uint256,uint256,bytes)',
-            args: [address, 1, fid, sig],
-          }),
-        });
+        // const res = await fetch(
+        //   "https://frame.syndicate.io/api/v2/sendTransaction",
+        //   {
+        //     method: "POST",
+        //     headers: {
+        //       "content-type": "application/json",
+        //       Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
+        //     },
+        //     body: JSON.stringify({
+        //       frameTrustedData: body.trustedData.messageBytes,
+        //       contractAddress: process.env.MINER_CONTRACT_ADDRESS,
+        //       functionSignature: "mint(address,uint256,uint256,bytes)",
+        //       args: [address, 1, fid, sig],
+        //     }),
+        //   },
+        // );
         if (res.status === 200) {
           const {
             success,
             data: { transactionId },
           } = await res.json();
           if (success) {
-            session = { ...session, transactionId, checks: 0, retries: totalRetries + 1 };
+            session = {
+              ...session,
+              transactionId,
+              checks: 0,
+              retries: totalRetries + 1,
+            };
             await kv.set(`session:${fid}`, session);
             const res = await fetch(
-              `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
+              `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
               {
                 headers: {
-                  'content-type': 'application/json',
+                  "content-type": "application/json",
                   Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
                 },
               },
@@ -77,7 +85,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                 getFrameHtml({
                   buttons: [
                     {
-                      label: '🔄 Check status',
+                      label: "🔄 Check status",
                     },
                   ],
                   post_url: `${NEXT_PUBLIC_URL}/api/check`,
@@ -96,7 +104,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
           {
             headers: {
-              'content-type': 'application/json',
+              "content-type": "application/json",
               Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
             },
           },
@@ -111,8 +119,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               getFrameHtml({
                 buttons: [
                   {
-                    label: 'Transaction',
-                    action: 'link',
+                    label: "Transaction",
+                    action: "link",
                     target: `https://basescan.org/tx/${transactionHash}`,
                   },
                 ],
@@ -124,7 +132,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               getFrameHtml({
                 buttons: [
                   {
-                    label: '🔄 Check status',
+                    label: "🔄 Check status",
                   },
                 ],
                 post_url: `${NEXT_PUBLIC_URL}/api/check`,
@@ -140,11 +148,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     } else {
       return mintResponse();
     }
-  } else return new NextResponse('Unauthorized', { status: 401 });
+  } else return new NextResponse("Unauthorized", { status: 401 });
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
