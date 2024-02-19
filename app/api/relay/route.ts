@@ -81,10 +81,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             data: { transactionId },
           } = await res.json();
           if (success) {
+            console.log("transactionId", transactionId);
             session = { ...session, transactionId };
             await kv.set(`session:${fid}`, session);
             const res = await fetch(
-              `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
+              `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
               {
                 headers: {
                   "content-type": "application/json",
@@ -96,7 +97,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               console.log(
                 "res",
                 res,
-                `https://frame.syndicate.io/api/transaction/${transactionId}/hash`,
+                `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
                 "go to check",
               );
               return new NextResponse(
