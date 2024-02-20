@@ -25,7 +25,7 @@ export async function getCollection() {
     includeFullDetails: false,
   });
   const name = collection.token?.token.name ?? "Unknown Collection";
-  const image = `${NEXT_PUBLIC_URL}/park-1.png`;
+  const image = `${NEXT_PUBLIC_URL}/horse.png`;
   // collection.token?.token.image?.mediaEncoding?.original ??
   // `${NEXT_PUBLIC_URL}/giraffe.png`;
   return {

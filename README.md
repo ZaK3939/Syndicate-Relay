@@ -27,42 +27,42 @@ Have fun! ⛵️
 ### `app/page.tsx`
 
 ```tsx
-import { getFrameMetadata } from '@coinbase/onchainkit';
-import type { Metadata } from 'next';
-import { NEXT_PUBLIC_URL } from './config';
+import { getFrameMetadata } from "@coinbase/onchainkit";
+import type { Metadata } from "next";
+import { NEXT_PUBLIC_URL } from "./config";
 
 const frameMetadata = getFrameMetadata({
   buttons: [
     {
-      label: 'Story time!',
+      label: "Story time!",
     },
     {
-      action: 'link',
-      label: 'Link to Google',
-      target: 'https://www.google.com',
+      action: "link",
+      label: "Link to Google",
+      target: "https://www.google.com",
     },
     {
-      label: 'Redirect to pictures',
-      action: 'post_redirect',
+      label: "Redirect to pictures",
+      action: "post_redirect",
     },
   ],
   image: {
     src: `${NEXT_PUBLIC_URL}/park-3.png`,
-    aspectRatio: '1:1',
+    aspectRatio: "1:1",
   },
   input: {
-    text: 'Tell me a boat story',
+    text: "Tell me a boat story",
   },
   postUrl: `${NEXT_PUBLIC_URL}/api/frame`,
 });
 
 export const metadata: Metadata = {
-  title: 'zizzamia.xyz',
-  description: 'LFG',
+  title: "zizzamia.xyz",
+  description: "LFG",
   openGraph: {
-    title: 'zizzamia.xyz',
-    description: 'LFG',
-    images: [`${NEXT_PUBLIC_URL}/park-1.png`],
+    title: "zizzamia.xyz",
+    description: "LFG",
+    images: [`${NEXT_PUBLIC_URL}/horse.png`],
   },
   other: {
     ...frameMetadata,
@@ -82,11 +82,15 @@ export default function Page() {
 
 ```tsx
 export const viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1.0,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body>{children}</body>
@@ -98,22 +102,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ### `app/config.ts`
 
 ```ts
-export const NEXT_PUBLIC_URL = 'https://zizzamia.xyz';
+export const NEXT_PUBLIC_URL = "https://zizzamia.xyz";
 ```
 
 ### `app/api/frame/route.ts`
 
 ```ts
-import { FrameRequest, getFrameMessage, getFrameHtmlResponse } from '@coinbase/onchainkit';
-import { NextRequest, NextResponse } from 'next/server';
-import { NEXT_PUBLIC_URL } from '../../config';
+import {
+  FrameRequest,
+  getFrameMessage,
+  getFrameHtmlResponse,
+} from "@coinbase/onchainkit";
+import { NextRequest, NextResponse } from "next/server";
+import { NEXT_PUBLIC_URL } from "../../config";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
-  let accountAddress: string | undefined = '';
-  let text: string | undefined = '';
+  let accountAddress: string | undefined = "";
+  let text: string | undefined = "";
 
   const body: FrameRequest = await req.json();
-  const { isValid, message } = await getFrameMessage(body, { neynarApiKey: 'NEYNAR_ONCHAIN_KIT' });
+  const { isValid, message } = await getFrameMessage(body, {
+    neynarApiKey: "NEYNAR_ONCHAIN_KIT",
+  });
 
   if (isValid) {
     accountAddress = message.interactor.verified_accounts[0];
@@ -125,7 +135,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (message?.button === 3) {
     return NextResponse.redirect(
-      'https://www.google.com/search?q=cute+dog+pictures&tbm=isch&source=lnms',
+      "https://www.google.com/search?q=cute+dog+pictures&tbm=isch&source=lnms",
       { status: 302 },
     );
   }
@@ -138,7 +148,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         },
       ],
       image: {
-        src: `${NEXT_PUBLIC_URL}/park-1.png`,
+        src: `${NEXT_PUBLIC_URL}/horse.png`,
       },
       postUrl: `${NEXT_PUBLIC_URL}/api/frame`,
     }),
@@ -149,7 +159,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 ```
 
 <br />
