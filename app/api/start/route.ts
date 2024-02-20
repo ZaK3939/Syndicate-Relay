@@ -1,5 +1,5 @@
-import { FrameRequest, getFrameMessage } from '@coinbase/onchainkit';
-import { NextRequest, NextResponse } from 'next/server';
+import { FrameRequest, getFrameMessage } from "@coinbase/onchainkit";
+import { NextRequest, NextResponse } from "next/server";
 
 import {
   NEXT_PUBLIC_URL,
@@ -7,46 +7,43 @@ import {
   ZORA_COLLECTION_ADDRESS,
   ZORA_TOKEN_ID,
   queryForLand,
-} from '../../config';
-import { getAddressButtons } from '../../lib/addresses';
-import { allowedOrigin } from '../../lib/origin';
-import { kv } from '@vercel/kv';
-import { getFrameHtml } from '../../lib/getFrameHtml';
-import { LandResponse, Session } from '../../lib/types';
-import { mintResponse } from '../../lib/responses';
-import { retryableApiPost } from '../../lib/retry';
+} from "../../config";
+import { getAddressButtons } from "../../lib/addresses";
+import { allowedOrigin } from "../../lib/origin";
+import { kv } from "@vercel/kv";
+import { getFrameHtml } from "../../lib/getFrameHtml";
+import { LandResponse, Session } from "../../lib/types";
+import { mintResponse } from "../../lib/responses";
+import { retryableApiPost } from "../../lib/retry";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
   const { isValid, message } = await getFrameMessage(body, {
     neynarApiKey: process.env.NEYNAR_API_KEY,
   });
-  console.log('isValid', isValid, 'message', message);
+  console.log("isValid", isValid, "message", message);
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
-    const isActive = message.raw.action.interactor.active_status === 'active';
-    console.log('message', message);
+    const isActive = message.raw.action.interactor.active_status === "active";
     const address = message.interactor.verified_accounts[0].toLowerCase();
-    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
-      query: queryForLand(address),
-    });
-    if (isActive || (result.data && result.data.philandList.data)) {
+
+    if (isActive) {
       const fid = message.interactor.fid;
-      const landName = result.data!.philandList.data[0].name;
-      const { transactionId, transactionHash } = ((await kv.get(`session:${fid}`)) ??
-        {}) as Session;
+      const { transactionId, transactionHash } = ((await kv.get(
+        `session:${fid}`,
+      )) ?? {}) as Session;
       if (transactionHash) {
         // Already minted
         return new NextResponse(
           getFrameHtml({
             buttons: [
               {
-                label: `Transaction ${landName}`,
-                action: 'link',
+                label: `Transaction`,
+                action: "link",
                 target: `https://basescan.org/tx/${transactionHash}`,
               },
               {
-                label: 'Mint',
-                action: 'mint',
+                label: "Mint",
+                action: "mint",
                 target: `eip155:8453:${ZORA_COLLECTION_ADDRESS}:${ZORA_TOKEN_ID}`,
               },
             ],
@@ -59,7 +56,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           getFrameHtml({
             buttons: [
               {
-                label: '🔄 Check status',
+                label: "🔄 Check status",
               },
             ],
             post_url: `${NEXT_PUBLIC_URL}/api/check`,
@@ -79,11 +76,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     } else {
       return mintResponse();
     }
-  } else return new NextResponse('Unauthorized', { status: 401 });
+  } else return new NextResponse("Unauthorized", { status: 401 });
 }
 
 export async function POST(req: NextRequest): Promise<Response> {
   return getResponse(req);
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";

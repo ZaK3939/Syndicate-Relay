@@ -4,10 +4,9 @@ import { NEXT_PUBLIC_URL, PHI_GRAPH, queryForLand } from "../../config";
 import { allowedOrigin } from "../../lib/origin";
 import { kv } from "@vercel/kv";
 import { getFrameHtml } from "../../lib/getFrameHtml";
-import { LandResponse, Session } from "../../lib/types";
+import { Session } from "../../lib/types";
 import { errorResponse, mintResponse } from "../../lib/responses";
 import signMintData from "../../lib/signMint";
-import { retryableApiPost } from "../../lib/retry";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
@@ -18,10 +17,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
     const isActive = message.raw.action.interactor.active_status === "active";
     const address = message.interactor.verified_accounts[0].toLowerCase();
-    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
-      query: queryForLand(address),
-    });
-    if (isActive || (result.data && result.data.philandList.data)) {
+
+    if (isActive) {
       const fid = message.interactor.fid;
       let session = ((await kv.get(`session:${fid}`)) ?? {}) as Session;
       const { address, transactionId, checks, retries } = session;
@@ -69,7 +66,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             },
             body: JSON.stringify({
               frameTrustedData: body.trustedData.messageBytes,
-              contractAddress: "0x3221679c531bcf7eb4f728bbad3f4301d2e2d640",
+              // contractAddress: "0x3221679c531bcf7eb4f728bbad3f4301d2e2d640",
+              contractAddress: "0xe32a102cdd90efff59397573f1456fc4fe02f3e7",
               functionSignature: functionSignature,
               args: { to: "{frame-user}" },
             }),
