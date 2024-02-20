@@ -57,6 +57,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         //   },
         // );
         let functionSignature = "mint(address to)";
+        const postData = JSON.stringify({
+          frameTrustedData: body.trustedData.messageBytes,
+          // contractAddress: "0x3221679c531bcf7eb4f728bbad3f4301d2e2d640",
+          contractAddress: `${process.env.PHI_COLLECTION_ADDRESS}`,
+          functionSignature: functionSignature,
+          args: { to: "{frame-user}" },
+        });
         const res = await fetch(
           "https://frame.syndicate.io/api/v2/sendTransaction",
           {
@@ -65,13 +72,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               "Content-Type": "application/json",
               Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
             },
-            body: JSON.stringify({
-              frameTrustedData: body.trustedData.messageBytes,
-              // contractAddress: "0x3221679c531bcf7eb4f728bbad3f4301d2e2d640",
-              contractAddress: `${process.env.PHI_COLLECTION_ADDRESS}`,
-              functionSignature: functionSignature,
-              args: { to: "{frame-user}" },
-            }),
+            body: postData,
           },
         );
         console.log("response syndicate frame", res);
