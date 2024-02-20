@@ -25,6 +25,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       const totalChecks = checks ?? 0;
       const totalRetries = retries ?? 0;
 
+      console.log("session", session);
       // If we've retried 3 times, give up
       if (totalRetries > 2) {
         console.error("retries exceeded");
@@ -129,7 +130,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             },
           },
         );
-        console.log(res);
+        console.log(res, transactionId);
         if (res.status === 200) {
           const {
             data: { transactionHash },
