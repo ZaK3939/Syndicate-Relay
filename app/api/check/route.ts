@@ -97,6 +97,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                 },
               },
             );
+
+            console.log(res);
             if (res.status === 200) {
               return new NextResponse(
                 getFrameHtml({
