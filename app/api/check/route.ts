@@ -28,8 +28,8 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       console.log("session", session);
       // If we've retried 3 times, give up
       if (totalRetries > 2) {
-        console.error("retries exceeded");
-        return errorResponse();
+        // console.error("retries exceeded");
+        // return errorResponse();
       }
 
       // If we've not checked 3 times, try to mint again
