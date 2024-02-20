@@ -15,10 +15,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   });
 
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
-    const isActive = message.raw.action.interactor.active_status === "active";
+    // const isActive = message.raw.action.interactor.active_status === "active";
     const address = message.interactor.verified_accounts[0].toLowerCase();
 
-    if (isActive) {
+    if (address) {
       const fid = message.interactor.fid;
       let session = ((await kv.get(`session:${fid}`)) ?? {}) as Session;
       const { address, transactionId, checks, retries } = session;
