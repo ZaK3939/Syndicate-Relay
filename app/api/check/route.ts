@@ -67,7 +67,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             body: JSON.stringify({
               frameTrustedData: body.trustedData.messageBytes,
               // contractAddress: "0x3221679c531bcf7eb4f728bbad3f4301d2e2d640",
-              contractAddress: "0xe32a102cdd90efff59397573f1456fc4fe02f3e7",
+              contractAddress: `${process.env.PHI_COLLECTION_ADDRESS}`,
               functionSignature: functionSignature,
               args: { to: "{frame-user}" },
             }),

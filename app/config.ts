@@ -5,7 +5,7 @@ export const NEXT_PUBLIC_URL = "https://test-frame-zak3939.vercel.app";
 export const ALLOWED_ORIGIN = "test-frame-zak3939.vercel.app";
 // export const MINTER_CONTRACT = "0xcf2db0c4abeafc2e1af552979f380c965f63783e";
 export const PHI_COLLECTION_ADDRESS =
-  "0xE6EdA4222776097641227BB30EfC583A71a44b62d";
+  "0x11Df515078C79B4969fAafEAA93A611Bb1e53c7F";
 export const PHI_TOKEN_ID = "1";
 
 export const CARD_DIMENSIONS = {
