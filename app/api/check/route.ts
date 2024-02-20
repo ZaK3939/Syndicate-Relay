@@ -75,6 +75,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             body: postData,
           },
         );
+        console.log("postData", postData);
         console.log("response syndicate frame", res);
         if (res.status === 200) {
           const {
