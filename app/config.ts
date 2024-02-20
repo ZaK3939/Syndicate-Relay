@@ -1,7 +1,8 @@
-export const NEXT_PUBLIC_URL = "https://mint.farcaster.xyz";
-// export const NEXT_PUBLIC_URL = "https://test-frame-zak3939.vercel.app";
+// export const NEXT_PUBLIC_URL = "https://mint.farcaster.xyz";
+export const NEXT_PUBLIC_URL =
+  "https://a-frame-in-100-lines-seven-khaki.vercel.app";
 
-export const ALLOWED_ORIGIN = "mint.farcaster.xyz";
+export const ALLOWED_ORIGIN = "a-frame-in-100-lines-seven-khaki.vercel.app";
 /* The line `const ALLOWED_ORIGIN = "test-frame-zak3939.vercel.app";` is assigning the value
 "test-frame-zak3939.vercel.app" to the constant variable `ALLOWED_ORIGIN`. This variable is likely
 used to specify a specific origin that is allowed to access resources or interact with the code in
