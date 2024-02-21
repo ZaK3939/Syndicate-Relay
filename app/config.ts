@@ -10,7 +10,7 @@ some way. This can be useful for security purposes to restrict access to certain
 // export const ALLOWED_ORIGIN = "test-frame-zak3939.vercel.app";
 // export const MINTER_CONTRACT = "0xcf2db0c4abeafc2e1af552979f380c965f63783e";
 export const PHI_COLLECTION_ADDRESS =
-  "0xE6f3C7D5c7ECA259ACE70013dfc1eE77d8388aCD";
+  "0xe6f3c7d5c7eca259ace70013dfc1ee77d8388acd";
 export const PHI_TOKEN_ID = "1";
 
 export const CARD_DIMENSIONS = {
