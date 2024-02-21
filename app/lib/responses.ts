@@ -13,7 +13,7 @@ export function errorResponse() {
         {
           label: "Mint",
           action: "mint",
-          target: `eip155:8453:${PHI_COLLECTION_ADDRESS}:${PHI_TOKEN_ID}`,
+          target: `eip155:8453:${PHI_COLLECTION_ADDRESS}`,
         },
       ],
       image: `${NEXT_PUBLIC_URL}/api/images/error`,
