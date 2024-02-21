@@ -9,6 +9,13 @@ import { getFrameHtml } from "./getFrameHtml";
 export function errorResponse() {
   return new NextResponse(
     getFrameHtml({
+      buttons: [
+        {
+          label: "Mint",
+          action: "mint",
+          target: `eip155:8453:${PHI_COLLECTION_ADDRESS}:${PHI_TOKEN_ID}`,
+        },
+      ],
       image: `${NEXT_PUBLIC_URL}/api/images/error`,
     }),
   );
