@@ -1,6 +1,6 @@
 import { getFrameMetadata } from "@coinbase/onchainkit";
 import type { Metadata } from "next";
-import { NEXT_PUBLIC_URL } from "./config";
+import { NEXT_PUBLIC_URL, PHI_COLLECTION_ADDRESS } from "./config";
 import { getCollection } from "./lib/collection";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -10,6 +10,11 @@ export async function generateMetadata(): Promise<Metadata> {
     buttons: [
       {
         label: "Check eligibility",
+      },
+      {
+        label: "Mint",
+        action: "mint",
+        target: `eip155:8453:${PHI_COLLECTION_ADDRESS}`,
       },
     ],
     image: `${NEXT_PUBLIC_URL}/api/images/start`,
