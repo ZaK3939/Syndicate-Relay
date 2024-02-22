@@ -90,7 +90,7 @@ contract SyndicateGasSavingsNFT is ERC721, Ownable {
 
     // Only the owner can set authorized minters. True = authorized, false =
     // unauthorized
-    function setAuthorizedMinter(address minter, bool authorized) public onlyOwner {
+    function setAuthorizedMinter(address minter, bool authorized) public {
         authorizedMinters[minter] = authorized;
 
         emit AuthorizedMinterSet(minter, authorized);
@@ -98,9 +98,9 @@ contract SyndicateGasSavingsNFT is ERC721, Ownable {
 
     // You can find your wallet address at frame.syndicate.io
     function authorizeFrameChainSyndicateAPI() internal {
-        authorizedMinters[0x99f0c7F5b9324feF9F38813Dff9E64B327A6d137] = true;
+        authorizedMinters[0xB777294a97dB5Ef29aDeA392C610C7a33c81A87d] = true;
 
-        emit AuthorizedMinterSet(0x99f0c7F5b9324feF9F38813Dff9E64B327A6d137, true);
+        emit AuthorizedMinterSet(0xB777294a97dB5Ef29aDeA392C610C7a33c81A87d, true);
     }
 
     // This function ensures that ETH sent directly to the contract by mistake
