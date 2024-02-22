@@ -8,9 +8,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const name = "zak3939";
   const frameMetadata = getFrameMetadata({
     buttons: [
-      // {
-      //   label: "Check eligibility",
-      // },
+      {
+        label: "Check eligibility",
+      },
       {
         label: "Mint",
         action: "mint",

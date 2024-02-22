@@ -98,21 +98,15 @@ contract SyndicateGasSavingsNFT is ERC721, Ownable {
 
     // You can find your wallet address at frame.syndicate.io
     function authorizeFrameChainSyndicateAPI() internal {
-        authorizedMinters[0xA027cB4E5C487470E2b296041Bcf02adEBa0dfA1] = true;
-        authorizedMinters[0x8976c7643E853bE50312a9B421A2400f129b5F2e] = true;
-        authorizedMinters[0xa0047267957B069874B336303302d48a9eaEb9eC] = true;
-        authorizedMinters[0xB434d8c1dac71aD18DFD1d130E745e6F16e1f37A] = true;
-        authorizedMinters[0x54b6750d18A0A922f8ecDF4bD249884F700913DB] = true;
+        authorizedMinters[0x99f0c7F5b9324feF9F38813Dff9E64B327A6d137] = true;
 
-        emit AuthorizedMinterSet(0xA027cB4E5C487470E2b296041Bcf02adEBa0dfA1, true);
-        emit AuthorizedMinterSet(0x8976c7643E853bE50312a9B421A2400f129b5F2e, true);
-        emit AuthorizedMinterSet(0xa0047267957B069874B336303302d48a9eaEb9eC, true);
-        emit AuthorizedMinterSet(0xB434d8c1dac71aD18DFD1d130E745e6F16e1f37A, true);
-        emit AuthorizedMinterSet(0x54b6750d18A0A922f8ecDF4bD249884F700913DB, true);
+        emit AuthorizedMinterSet(0x99f0c7F5b9324feF9F38813Dff9E64B327A6d137, true);
     }
 
     // This function ensures that ETH sent directly to the contract by mistake
     // is rejected
+     // Receive function to receive ETH
+    receive() external payable { }
     fallback() external payable {
         revert("SyndicateGasSavingsNFT: Does not accept ETH");
     }
