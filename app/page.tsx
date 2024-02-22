@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     ],
     image: `${NEXT_PUBLIC_URL}/api/images/start`,
-    // post_url: `${NEXT_PUBLIC_URL}/api/start`,
+    post_url: `${NEXT_PUBLIC_URL}/api/start`,
   });
 
   return {
