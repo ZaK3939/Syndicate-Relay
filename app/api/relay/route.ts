@@ -28,21 +28,13 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const isActive = message.raw.action.interactor.active_status === "active";
     const fid = message.interactor.fid;
     let session = ((await kv.get(
       `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
     )) ?? {}) as Session;
     console.log("message.interactor", message.interactor);
-    const address = message.interactor.verified_accounts[0].toLowerCase();
-    const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
-      query: queryForLand(address),
-    });
 
-    if (
-      (isActive || (result.data && result.data.philandList.data)) &&
-      session?.address
-    ) {
+    if (session?.address) {
       const { address } = session;
       const sig = await signMintData({
         to: address,
