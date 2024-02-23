@@ -12,7 +12,7 @@ some way. This can be useful for security purposes to restrict access to certain
 // export const PHI_COLLECTION_ADDRESS =
 //   "0xe6f3c7d5c7eca259ace70013dfc1ee77d8388acd";
 export const PHI_COLLECTION_ADDRESS =
-  "0x601B0206c70182bFC31306cB3D487433a2A67007";
+  "0xcd49c434299872218a03875de2004e708b973918";
 
 export const PHI_TOKEN_ID = "1";
 
