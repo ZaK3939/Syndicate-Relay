@@ -20,7 +20,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     if (address) {
       const fid = message.interactor.fid;
-      let session = ((await kv.get(`session:${fid}`)) ?? {}) as Session;
+      let session = ((await kv.get(
+        `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+      )) ?? {}) as Session;
       const { address, transactionId, checks, retries } = session;
       const totalChecks = checks ?? 0;
       const totalRetries = retries ?? 0;
@@ -59,7 +61,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         let functionSignature = "mint(address to)";
         const postData = JSON.stringify({
           frameTrustedData: body.trustedData.messageBytes,
-          // contractAddress: "0x3221679c531bcf7eb4f728bbad3f4301d2e2d640",
           contractAddress: `${process.env.PHI_COLLECTION_ADDRESS}`,
           functionSignature: functionSignature,
           args: { to: "{frame-user}" },

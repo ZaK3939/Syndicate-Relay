@@ -27,7 +27,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (address) {
       const fid = message.interactor.fid;
       const { transactionId, transactionHash } = ((await kv.get(
-        `session:${fid}`,
+        `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
       )) ?? {}) as Session;
       if (transactionHash) {
         // Already minted
