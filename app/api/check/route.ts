@@ -92,7 +92,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               retries: totalRetries + 1,
             };
             await kv.set(
-              `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+              `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
               session,
             );
             const res = await fetch(
@@ -126,7 +126,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       console.log("session", session);
       // If we have a transactionId, check the status
       if (transactionId) {
-        await kv.set(`session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`, {
+        await kv.set(`session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`, {
           ...session,
           checks: totalChecks + 1,
         });
@@ -146,7 +146,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           } = await res.json();
           if (transactionHash) {
             await kv.set(
-              `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+              `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
               { ...session, transactionHash },
             );
             return new NextResponse(
@@ -155,7 +155,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
                   {
                     label: "Transaction",
                     action: "link",
-                    target: `https://basescan.org/tx/${transactionHash}`,
+                    target: `https://explorer-frame.syndicate.io/tx/${transactionHash}`,
                   },
                 ],
                 image: `${NEXT_PUBLIC_URL}/api/images/success?address=${address}`,

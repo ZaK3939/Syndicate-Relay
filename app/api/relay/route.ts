@@ -47,7 +47,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         let functionSignature = "mint(address to)";
         const postData = JSON.stringify({
           frameTrustedData: body.trustedData.messageBytes,
-          // contractAddress: "0x3221679c531bcf7eb4f728bbad3f4301d2e2d640",
           contractAddress: `${process.env.PHI_COLLECTION_ADDRESS}`,
           functionSignature: functionSignature,
           args: { to: "{frame-user}" },
@@ -83,7 +82,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             console.log("transactionId", transactionId);
             session = { ...session, transactionId };
             await kv.set(
-              `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+              `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
               session,
             );
             const res = await fetch(

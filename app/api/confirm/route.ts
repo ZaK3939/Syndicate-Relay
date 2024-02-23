@@ -31,7 +31,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     const addresses = getAddresses(message.interactor);
     const address = addresses[message.button - 1];
 
-    await kv.set(`session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`, {
+    await kv.set(`session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`, {
       address,
     });
 

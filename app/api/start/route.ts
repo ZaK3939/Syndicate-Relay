@@ -21,7 +21,6 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   });
   console.log("isValid", isValid, "message", message);
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
-    // const isActive = message.raw.action.interactor.active_status === "active";
     const address = message.interactor.verified_accounts[0].toLowerCase();
 
     if (address) {
