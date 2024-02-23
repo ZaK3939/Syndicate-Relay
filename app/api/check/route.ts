@@ -91,7 +91,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               checks: 0,
               retries: totalRetries + 1,
             };
-            await kv.set(`session:${fid}`, session);
+            await kv.set(
+              `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+              session,
+            );
             const res = await fetch(
               `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
               {
@@ -123,7 +126,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       console.log("session", session);
       // If we have a transactionId, check the status
       if (transactionId) {
-        await kv.set(`session:${fid}`, { ...session, checks: totalChecks + 1 });
+        await kv.set(`session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`, {
+          ...session,
+          checks: totalChecks + 1,
+        });
         const res = await fetch(
           `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
           {
@@ -139,7 +145,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
             data: { transactionHash },
           } = await res.json();
           if (transactionHash) {
-            await kv.set(`session:${fid}`, { ...session, transactionHash });
+            await kv.set(
+              `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+              { ...session, transactionHash },
+            );
             return new NextResponse(
               getFrameHtml({
                 buttons: [

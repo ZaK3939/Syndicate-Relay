@@ -90,7 +90,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           if (success) {
             console.log("transactionId", transactionId);
             session = { ...session, transactionId };
-            await kv.set(`session:${fid}`, session);
+            await kv.set(
+              `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+              session,
+            );
             const res = await fetch(
               `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
               {
