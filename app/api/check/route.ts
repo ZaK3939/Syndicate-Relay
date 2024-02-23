@@ -21,7 +21,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (address) {
       const fid = message.interactor.fid;
       let session = ((await kv.get(
-        `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+        `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
       )) ?? {}) as Session;
       const { address, transactionId, checks, retries } = session;
       const totalChecks = checks ?? 0;
