@@ -22,7 +22,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
   if (isValid && validButton(message) && allowedOrigin(message)) {
     const fid = message.interactor.fid;
-    const isActive = message.raw.action.interactor.active_status === "active";
+    // const isActive = message.raw.action.interactor.active_status === "active";
 
     // const result = await retryableApiPost<LandResponse>(PHI_GRAPH, {
     //   query: queryForLand(address),

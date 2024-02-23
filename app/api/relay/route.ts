@@ -30,7 +30,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
 
     const fid = message.interactor.fid;
     let session = ((await kv.get(
-      `session:${fid}:$${process.env.PHI_COLLECTION_ADDRESS}`,
+      `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
     )) ?? {}) as Session;
     console.log("message.interactor", message.interactor);
 
