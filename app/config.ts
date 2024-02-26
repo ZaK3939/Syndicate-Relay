@@ -10,4 +10,4 @@ export const CARD_DIMENSIONS = {
   height: 800,
 };
 
-export const TOKEN_IMAGE = `${NEXT_PUBLIC_URL}/shark.png`;
+export const TOKEN_IMAGE = `${NEXT_PUBLIC_URL}/horse.png`;
