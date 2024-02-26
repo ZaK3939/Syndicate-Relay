@@ -1,4 +1,4 @@
-import { Hex } from 'viem';
+import { Hex } from "viem";
 
 export interface Session {
   address?: Hex;
@@ -6,19 +6,4 @@ export interface Session {
   transactionHash?: string;
   checks?: number;
   retries?: number;
-}
-
-type Land = {
-  name: string;
-  landurl: string;
-  imageurl: string;
-};
-
-export interface LandResponse {
-  data?: {
-    philandList: {
-      data: Land[];
-    };
-  };
-  error?: Error;
 }

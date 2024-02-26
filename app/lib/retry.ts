@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { AxiosResponse } from 'axios';
+import axios from "axios";
+import { AxiosResponse } from "axios";
 
 export type RetryableApiOptions = {
   delay?: number;
@@ -13,7 +13,10 @@ const defaultRetryableApiOptions: RetryableApiOptions = {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export const retryfunc = async <T>(f: () => Promise<T>, retries: number): Promise<T> => {
+export const retryfunc = async <T>(
+  f: () => Promise<T>,
+  retries: number,
+): Promise<T> => {
   try {
     await sleep(1000 + Math.random() * 10000);
     return await f();
@@ -33,16 +36,17 @@ export async function retryableApiPost<T>(
     opts = defaultRetryableApiOptions;
   }
   if (!opts.delay || !opts.times) {
-    throw 'invalid opts';
+    throw "invalid opts";
   }
   let result: T | undefined;
   for (let i = 0; i < opts.times + 1; ++i) {
     try {
       const headers = {
-        'Content-Type': 'application/json',
-        'x-api-key': `${process.env.PHI_API_KEY}`,
+        "Content-Type": "application/json",
       };
-      const resp: AxiosResponse<T, any> = await axios.post<T>(endpoint, data, { headers: headers });
+      const resp: AxiosResponse<T, any> = await axios.post<T>(endpoint, data, {
+        headers: headers,
+      });
       if (resp.status == 200) {
         result = resp.data;
         break;
@@ -69,14 +73,17 @@ export async function retryableApiPost<T>(
   return result;
 }
 
-export async function retryableAsyncRequest(func: any, opts?: RetryableApiOptions): Promise<any> {
+export async function retryableAsyncRequest(
+  func: any,
+  opts?: RetryableApiOptions,
+): Promise<any> {
   if (opts) {
     opts = { ...defaultRetryableApiOptions, ...opts } as RetryableApiOptions;
   } else {
     opts = defaultRetryableApiOptions;
   }
   if (!opts.delay || !opts.times) {
-    throw 'invalid opts';
+    throw "invalid opts";
   }
   let result, lastErr;
   for (let i = 0; i < opts.times + 1; ++i) {
@@ -85,7 +92,7 @@ export async function retryableAsyncRequest(func: any, opts?: RetryableApiOption
     } catch (e) {
       lastErr = e;
       if (i < opts.times) {
-        console.log('retrying', i + 1);
+        console.log("retrying", i + 1);
       }
     }
 

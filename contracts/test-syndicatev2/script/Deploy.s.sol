@@ -3,7 +3,7 @@ pragma solidity 0.8.23;
 
 import { console2 } from "forge-std/console2.sol";
 
-import { SyndicateGasSavingsNFT } from "../src/SyndicateGasSavingsNFT.sol";
+import { DemoERC1155 } from "../src/DemoERC1155.sol";
 
 import { BaseScript } from "./Base.s.sol";
 
@@ -16,6 +16,6 @@ contract Deploy is BaseScript {
     }
 
     function run() public broadcast {
-        new SyndicateGasSavingsNFT();
+        new DemoERC1155(deployer);
     }
 }

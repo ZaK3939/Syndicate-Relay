@@ -1,18 +1,12 @@
 import { FrameRequest, getFrameMessage } from "@coinbase/onchainkit";
 import { NextRequest, NextResponse } from "next/server";
-
-import {
-  NEXT_PUBLIC_URL,
-  PHI_COLLECTION_ADDRESS,
-  PHI_TOKEN_ID,
-} from "../../config";
+import { NEXT_PUBLIC_URL, NFT_ADDRESS } from "../../config";
 import { getAddressButtons } from "../../lib/addresses";
 import { allowedOrigin } from "../../lib/origin";
 import { kv } from "@vercel/kv";
 import { getFrameHtml } from "../../lib/getFrameHtml";
-import { LandResponse, Session } from "../../lib/types";
-import { mintResponse } from "../../lib/responses";
-import { retryableApiPost } from "../../lib/retry";
+import { Session } from "../../lib/types";
+import { noRecastResponse, verifiedAccounts } from "../../lib/responses";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
@@ -22,11 +16,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   console.log("isValid", isValid, "message", message);
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
     const address = message.interactor.verified_accounts[0].toLowerCase();
-
+    const fid = message.interactor.fid;
     if (address) {
-      const fid = message.interactor.fid;
       const { transactionId, transactionHash } = ((await kv.get(
-        `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
+        `session:${fid}:${NFT_ADDRESS}`,
       )) ?? {}) as Session;
       if (transactionHash) {
         // Already minted
@@ -36,12 +29,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               {
                 label: `Transaction`,
                 action: "link",
-                target: `https://basescan.org/tx/${transactionHash}`,
-              },
-              {
-                label: "Mint",
-                action: "mint",
-                target: `eip155:8453:${PHI_COLLECTION_ADDRESS}:${PHI_TOKEN_ID}`,
+                target: `https://explorer-frame.syndicate.io/tx/${transactionHash}`,
               },
             ],
             image: `${NEXT_PUBLIC_URL}/api/images/claimed`,
@@ -61,6 +49,10 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           }),
         );
       } else {
+        const isRecasted = message.recasted;
+        if (!isRecasted) {
+          return noRecastResponse();
+        }
         const buttons = getAddressButtons(message.interactor);
         return new NextResponse(
           getFrameHtml({
@@ -71,7 +63,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         );
       }
     } else {
-      return mintResponse();
+      return verifiedAccounts(fid);
     }
   } else return new NextResponse("Unauthorized", { status: 401 });
 }

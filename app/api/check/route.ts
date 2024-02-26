@@ -1,12 +1,20 @@
 import { FrameRequest, getFrameMessage } from "@coinbase/onchainkit";
 import { NextRequest, NextResponse } from "next/server";
-import { NEXT_PUBLIC_URL, PHI_GRAPH, queryForLand } from "../../config";
+import { NEXT_PUBLIC_URL, NFT_ADDRESS } from "../../config";
 import { allowedOrigin } from "../../lib/origin";
 import { kv } from "@vercel/kv";
 import { getFrameHtml } from "../../lib/getFrameHtml";
 import { Session } from "../../lib/types";
-import { errorResponse, mintResponse } from "../../lib/responses";
+import {
+  errorResponse,
+  noRecastResponse,
+  verifiedAccounts,
+} from "../../lib/responses";
 import signMintData from "../../lib/signMint";
+import {
+  checkTransactionIdStatus,
+  syndicateCallForSigMint,
+} from "../../lib/syndicateCall";
 
 async function getResponse(req: NextRequest): Promise<NextResponse> {
   const body: FrameRequest = await req.json();
@@ -15,23 +23,25 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
   });
 
   if (message?.button === 1 && isValid && allowedOrigin(message)) {
-    // const isActive = message.raw.action.interactor.active_status === "active";
+    const isRecasted = message.recasted;
+    if (!isRecasted) {
+      return noRecastResponse();
+    }
+    const fid = message.interactor.fid;
     const address = message.interactor.verified_accounts[0].toLowerCase();
 
     if (address) {
       const fid = message.interactor.fid;
-      let session = ((await kv.get(
-        `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
-      )) ?? {}) as Session;
+      let session = ((await kv.get(`session:${fid}:${NFT_ADDRESS}`)) ??
+        {}) as Session;
       const { address, transactionId, checks, retries } = session;
       const totalChecks = checks ?? 0;
       const totalRetries = retries ?? 0;
 
-      console.log("session", session);
       // If we've retried 3 times, give up
       if (totalRetries > 2) {
-        // console.error("retries exceeded");
-        // return errorResponse();
+        console.error("retries exceeded");
+        return errorResponse();
       }
 
       // If we've not checked 3 times, try to mint again
@@ -42,48 +52,19 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           tokenId: 1,
           fid,
         });
-        // const res = await fetch(
-        //   "https://frame.syndicate.io/api/v2/sendTransaction",
-        //   {
-        //     method: "POST",
-        //     headers: {
-        //       "content-type": "application/json",
-        //       Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
-        //     },
-        //     body: JSON.stringify({
-        //       frameTrustedData: body.trustedData.messageBytes,
-        //       contractAddress: process.env.MINER_CONTRACT_ADDRESS,
-        //       functionSignature: "mint(address,uint256,uint256,bytes)",
-        //       args: [address, 1, fid, sig],
-        //     }),
-        //   },
-        // );
-        let functionSignature = "mint(address to)";
-        const postData = JSON.stringify({
-          frameTrustedData: body.trustedData.messageBytes,
-          contractAddress: `${process.env.PHI_COLLECTION_ADDRESS}`,
-          functionSignature: functionSignature,
-          args: { to: "{frame-user}" },
-        });
-        const res = await fetch(
-          "https://frame.syndicate.io/api/v2/sendTransaction",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
-            },
-            body: postData,
-          },
+
+        const res = await syndicateCallForSigMint(
+          body.trustedData.messageBytes,
+          address,
+          fid,
+          sig,
         );
-        console.log("postData", postData);
-        console.log("response syndicate frame", res);
         if (res.status === 200) {
           const {
             success,
             data: { transactionId },
           } = await res.json();
-          console.log("transactionId", success, transactionId);
+
           if (success) {
             session = {
               ...session,
@@ -91,21 +72,9 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
               checks: 0,
               retries: totalRetries + 1,
             };
-            await kv.set(
-              `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
-              session,
-            );
-            const res = await fetch(
-              `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
-              {
-                headers: {
-                  "content-type": "application/json",
-                  Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
-                },
-              },
-            );
+            await kv.set(`session:${fid}:${NFT_ADDRESS}`, session);
+            const res = await checkTransactionIdStatus(transactionId);
 
-            console.log(res);
             if (res.status === 200) {
               return new NextResponse(
                 getFrameHtml({
@@ -123,32 +92,23 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
         }
         return errorResponse();
       }
-      console.log("session", session);
       // If we have a transactionId, check the status
       if (transactionId) {
-        await kv.set(`session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`, {
+        await kv.set(`session:${fid}:${NFT_ADDRESS}`, {
           ...session,
           checks: totalChecks + 1,
         });
-        const res = await fetch(
-          `https://frame.syndicate.io/api/v2/transaction/${transactionId}/hash`,
-          {
-            headers: {
-              "content-type": "application/json",
-              Authorization: `Bearer ${process.env.SYNDICATE_API_KEY}`,
-            },
-          },
-        );
-        console.log(res, transactionId);
+        const res = await checkTransactionIdStatus(transactionId);
+
         if (res.status === 200) {
           const {
             data: { transactionHash },
           } = await res.json();
           if (transactionHash) {
-            await kv.set(
-              `session:${fid}:${process.env.PHI_COLLECTION_ADDRESS}`,
-              { ...session, transactionHash },
-            );
+            await kv.set(`session:${fid}:${NFT_ADDRESS}`, {
+              ...session,
+              transactionHash,
+            });
             return new NextResponse(
               getFrameHtml({
                 buttons: [
@@ -180,7 +140,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       console.error;
       return errorResponse();
     } else {
-      return mintResponse();
+      return verifiedAccounts(fid);
     }
   } else return new NextResponse("Unauthorized", { status: 401 });
 }
