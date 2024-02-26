@@ -7,12 +7,13 @@ export async function syndicateCallForSigMint(
   fid: number,
   sig: Hex,
 ) {
-  let functionSignature = "mint(address,uint256,uint256,bytes)";
+  let functionSignature =
+    "mint(address to,uint256 tokenId,uint256 fid,bytes sig)";
   const postData = JSON.stringify({
     frameTrustedData: messageBytes,
     contractAddress: NFT_ADDRESS,
     functionSignature: functionSignature,
-    args: [address, 1, fid, sig],
+    args: { to: address, tokenId: 1, fid: fid, sig: sig },
     shouldLike: false,
     shouldRecast: true,
     shouldFollow: false,
