@@ -39,11 +39,11 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       const totalRetries = retries ?? 0;
 
       // If we've retried 3 times, give up
-      if (totalRetries > 2) {
-        console.error("retries exceeded");
-        return errorResponse();
-      }
-
+      // if (totalRetries > 2) {
+      //   console.error("retries exceeded");
+      //   return errorResponse();
+      // }
+      console.log("session", session);
       // If we've not checked 3 times, try to mint again
       if (totalChecks > 3 && session.address) {
         const { address } = session;
@@ -98,6 +98,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           ...session,
           checks: totalChecks + 1,
         });
+        console.log("checking transactionId", transactionId);
         const res = await checkTransactionIdStatus(transactionId);
 
         if (res.status === 200) {
