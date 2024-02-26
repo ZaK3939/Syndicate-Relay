@@ -18,6 +18,7 @@ export async function syndicateCallForSigMint(
     shouldRecast: true,
     shouldFollow: false,
   });
+
   const res = await fetch("https://frame.syndicate.io/api/v2/sendTransaction", {
     method: "POST",
     headers: {
@@ -26,6 +27,7 @@ export async function syndicateCallForSigMint(
     },
     body: postData,
   });
+  console.log("postData", postData, "res", res);
   return res;
 }
 

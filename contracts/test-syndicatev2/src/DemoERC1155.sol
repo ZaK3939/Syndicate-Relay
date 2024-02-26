@@ -108,6 +108,10 @@ contract DemoERC1155 is  Ownable, ERC1155Supply, EIP712 {
         return string.concat(baseURI,"R3YfnKXdGsx8ndtpGEHYVEi-p1qU8uPqeDdtarCuGvo?ext=png");
     }
 
+     /// @dev EIP-712 helper.
+    function hashTypedData(bytes32 structHash) public view returns (bytes32) {
+        return _hashTypedData(structHash);
+    }
     /*//////////////////////////////////////////////////////////////
                             INTERNAL UPDATE
     //////////////////////////////////////////////////////////////*/
