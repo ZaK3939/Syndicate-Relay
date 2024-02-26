@@ -13,3 +13,9 @@
 [submodule "contracts/test-syndicatev2/lib/solady"]
 	path = contracts/test-syndicatev2/lib/solady
 	url = https://github.com/vectorized/solady
+[submodule "contracts/syndicateNFT/lib/solady"]
+	path = contracts/syndicateNFT/lib/solady
+	url = https://github.com/vectorized/solady
+[submodule "contracts/syndicateNFT/lib/openzeppelin-contracts"]
+	path = contracts/syndicateNFT/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts

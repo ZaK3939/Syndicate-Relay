@@ -1,4 +1,4 @@
-import { FrameButtonMetadata } from '@coinbase/onchainkit/lib/core/types';
+import { FrameButtonMetadata } from "@coinbase/onchainkit/lib/core/types";
 
 export function getAddresses(interactor: {
   fid: number;
@@ -15,7 +15,11 @@ export function getAddresses(interactor: {
   }
 
   // If there are no verified accounts, add the custody address
-  if (addresses.length === 0 && interactor.custody_address && interactor.custody_address !== '0x') {
+  if (
+    addresses.length === 0 &&
+    interactor.custody_address &&
+    interactor.custody_address !== "0x"
+  ) {
     addresses.push(interactor.custody_address);
   }
   return addresses;
@@ -38,7 +42,11 @@ export function getAddressButtons(interactor: {
   }
 
   // If there are no verified accounts, add the custody address
-  if (buttons.length === 0 && interactor.custody_address && interactor.custody_address !== '0x') {
+  if (
+    buttons.length === 0 &&
+    interactor.custody_address &&
+    interactor.custody_address !== "0x"
+  ) {
     buttons.push({
       label: `🟣 ${interactor.custody_address.slice(0, 6)}`,
     });
