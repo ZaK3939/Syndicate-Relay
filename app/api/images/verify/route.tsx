@@ -7,7 +7,7 @@ export async function GET() {
     (
       <Card
         message="Sorry, you don't have any verified accounts. Please verify your account."
-        image={`${NEXT_PUBLIC_URL}/horse.png`}
+        image={`${NEXT_PUBLIC_URL}/shark.png`}
       />
     ),
     CARD_DIMENSIONS,
