@@ -44,6 +44,8 @@ contract DemoERC1155 is  Ownable, ERC1155Supply, EIP712 {
     event BaseTokenURISet(string tokenURI);
     /// @notice Emitted when a user mints through the Frame server
     event Mint(address indexed to, uint256 indexed tokenId, uint256 indexed fid);
+    /// @notice emitted when owner changes the signer address
+    event SetSigner(address oldSigner, address newSigner);
 
     /*//////////////////////////////////////////////////////////////
                               CONSTRUCTOR
@@ -57,7 +59,10 @@ contract DemoERC1155 is  Ownable, ERC1155Supply, EIP712 {
         // Update this with your own NFT collection's metadata
         baseURI = "https://www.arweave.net/";
     }
-
+    
+    /*//////////////////////////////////////////////////////////////
+                            EXTERNAL UPDATE
+    //////////////////////////////////////////////////////////////*/
     function mint(
         address to,
         uint256 tokenId,
@@ -77,6 +82,9 @@ contract DemoERC1155 is  Ownable, ERC1155Supply, EIP712 {
         _mint(to, currentTokenId,1,"");
     }
 
+    /*//////////////////////////////////////////////////////////////
+                                  SET
+    //////////////////////////////////////////////////////////////*/
     // Set the token URI for all tokens that don't have a custom tokenURI set.
     // Must be called by the owner given its global impact on the collection
     function setBaseURI(string memory _baseURI) public onlyOwner {
@@ -84,13 +92,25 @@ contract DemoERC1155 is  Ownable, ERC1155Supply, EIP712 {
         emit BaseTokenURISet(baseURI);
     }
 
+    /// @notice Set signer address. Only callable by owner.
+    /// @param _signer New signer address
+    function setSigner(address _signer) external onlyOwner {
+        emit SetSigner(signer, signer = _signer);
+    }
+
+
+    /*//////////////////////////////////////////////////////////////
+                             EXTERNAL VIEW
+    //////////////////////////////////////////////////////////////*/
     // Returns the URI for a token ID
     function uri(uint256 tokenId) public view override returns (string memory) {
         // return string.concat(baseURI, tokenId.toString());
         return string.concat(baseURI,"R3YfnKXdGsx8ndtpGEHYVEi-p1qU8uPqeDdtarCuGvo?ext=png");
     }
 
-
+    /*//////////////////////////////////////////////////////////////
+                            INTERNAL UPDATE
+    //////////////////////////////////////////////////////////////*/
     /// @dev EIP-712 domain name and contract version.
     function _domainNameAndVersion()
         internal
