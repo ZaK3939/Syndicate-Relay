@@ -69,9 +69,9 @@ contract DemoERC1155 is  Ownable, ERC1155Supply, EIP712 {
         uint256 fid,
         bytes calldata sig
     ) external {
-        if (!_verifySignature(to, tokenId, fid, sig)) {
-            revert InvalidSignature();
-        }
+        // if (!_verifySignature(to, tokenId, fid, sig)) {
+        //     revert InvalidSignature();
+        // }
         if (hasMinted[fid]) {
             revert AlreadyMinted();
         }
