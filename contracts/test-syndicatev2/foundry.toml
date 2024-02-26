@@ -18,7 +18,9 @@
 [profile.ci]
   fuzz = { runs = 10_000 }
   verbosity = 4
-   
+
+[etherscan]
+  base = { key = "${API_KEY_BASE}" }
 
 [fmt]
   bracket_spacing = true
@@ -32,6 +34,7 @@
   
 [rpc_endpoints]
   syndicate = "https://rpc-frame.syndicate.io"
+  base = "${BASE_MAINNET_RPC}"
 
 
 
