@@ -1,19 +1,20 @@
 import { Hex, zeroAddress } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { base } from "viem/chains";
+import { NFT_ADDRESS } from "../config";
 
 const SIGNER_PRIVATE_KEY = (process.env.SIGNER_PRIVATE_KEY ?? "0x00") as Hex;
-const MINTER_CONTRACT = (process.env.NFT_CONTRACT ?? zeroAddress) as Hex;
+const MINTER_CONTRACT = NFT_ADDRESS;
 
 const account = privateKeyToAccount(SIGNER_PRIVATE_KEY);
 
 // const chainId = base.id;
-const chainId = 5101; //For Syndicate
+const syndicateChainId = 5101; //For Syndicate
 
 const domain = {
   name: "DEMO FARCASTER NFT MINT",
   version: "1",
-  chainId,
+  chainId: syndicateChainId,
   verifyingContract: MINTER_CONTRACT,
 } as const;
 
