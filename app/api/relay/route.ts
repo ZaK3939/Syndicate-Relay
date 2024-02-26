@@ -28,8 +28,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
       return noRecastResponse();
     }
     const fid = message.interactor.fid;
-    let session = ((await kv.get(`session:${fid}:${NFT_ADDRESS}`)) ??
-      {}) as Session;
+    let session = ((await kv.get(`session:${fid}`)) ?? {}) as Session;
 
     if (session?.address) {
       try {
@@ -61,7 +60,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
           } = await res.json();
           if (success) {
             session = { ...session, transactionId };
-            await kv.set(`session:${fid}:${NFT_ADDRESS}`, session);
+            await kv.set(`session:${fid}`, session);
             const res = await checkTransactionIdStatus(transactionId);
             if (res.status === 200) {
               return new NextResponse(

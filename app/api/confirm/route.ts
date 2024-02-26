@@ -32,7 +32,7 @@ async function getResponse(req: NextRequest): Promise<NextResponse> {
     if (!address) {
       return verifiedAccounts(fid);
     }
-    await kv.set(`session:${fid}:${NFT_ADDRESS}`, {
+    await kv.set(`session:${fid}`, {
       address,
     });
 
