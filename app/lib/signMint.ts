@@ -7,7 +7,8 @@ const MINTER_CONTRACT = (process.env.NFT_CONTRACT ?? zeroAddress) as Hex;
 
 const account = privateKeyToAccount(SIGNER_PRIVATE_KEY);
 
-const chainId = base.id;
+// const chainId = base.id;
+const chainId = 5101; //For Syndicate
 
 const domain = {
   name: "DEMO FARCASTER NFT MINT",
